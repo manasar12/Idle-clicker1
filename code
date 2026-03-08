@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐾 Cuddle click · idle animal friends</title>
+  <!-- cute font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(145deg, #ffe9f4 0%, #ffe0f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Quicksand', sans-serif;
+      padding: 16px;
+      margin: 0;
+    }
+
+    .game-container {
+      max-width: 950px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 60px 60px 40px 40px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 35px rgba(231, 120, 180, 0.15),
+                  0 6px 12px rgba(255, 215, 235, 0.5),
+                  inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      border: 2px solid #ffc1e0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #a63b6f;
+      letter-spacing: -0.5px;
+      text-shadow: 4px 4px 0 #ffd9ec;
+      margin-top: 0;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+    h1 span {
+      display: inline-block;
+      transform: scale(1.2);
+      margin: 0 6px;
+    }
+
+    /* stats cards */
+    .stats-panel {
+      background: #fff5fb;
+      border-radius: 100px;
+      padding: 18px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 25px;
+      border: 3px solid white;
+      box-shadow: 0 5px 0 #e2b6cf;
+      margin-bottom: 25px;
+    }
+
+    .treats-box, .production-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: white;
+      padding: 8px 25px;
+      border-radius: 50px;
+      box-shadow: inset 0 2px 5px #ffe2f0, 0 4px 0 #d496b5;
+    }
+    .treats-box span, .production-box span {
+      color: #912f5e;
+    }
+    .treats-box span:first-child, .production-box span:first-child {
+      font-size: 2rem;
+      margin-right: 5px;
+    }
+
+    /* big clicker buddy */
+    .clicker-zone {
+      text-align: center;
+      margin: 10px 0 25px;
+    }
+    .clicker-btn {
+      background: #ffcfdf;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 130px;
+      cursor: pointer;
+      border: 8px solid white;
+      box-shadow: 0 15px 0 #c284a8, 0 20px 25px #ffb6d1;
+      transition: all 0.08s ease-out;
+      user-select: none;
+    }
+    .clicker-btn:active {
+      transform: translateY(12px);
+      box-shadow: 0 5px 0 #c284a8, 0 15px 25px #fbaac3;
+    }
+    .clicker-hint {
+      font-size: 1.2rem;
+      color: #8f4d71;
+      background: #ffeef5;
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      border: 2px dashed #ffa5c3;
+    }
+
+    /* shop grid */
+    .shop-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #a13464;
+      margin: 20px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 20px;
+    }
+    .animal-card {
+      background: white;
+      border-radius: 35px;
+      padding: 18px 15px 18px;
+      border: 3px solid #ffbfd7;
+      box-shadow: 0 8px 0 #d48daf, 0 12px 20px #fec7dd;
+      transition: transform 0.15s;
+      display: flex;
+      flex-direction: column;
+    }
+    .animal-card:hover {
+      transform: scale(1.02);
+    }
+    .animal-emoji {
+      font-size: 3rem;
+      line-height: 1;
+      margin-right: 10px;
+      filter: drop-shadow(2px 4px 0 #fbc1d5);
+    }
+    .animal-info {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px 8px;
+      margin-bottom: 10px;
+    }
+    .animal-name {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #8d3f61;
+      background: #ffeef2;
+      padding: 0 12px;
+      border-radius: 30px;
+      line-height: 1.8;
+    }
+    .animal-owned {
+      background: #ffe3ed;
+      margin-left: auto;
+      padding: 4px 15px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #6e2d4b;
+      font-size: 1rem;
+    }
+    .animal-details {
+      display: flex;
+      justify-content: space-between;
+      background: #fcf0f6;
+      padding: 12px 15px;
+      border-radius: 30px;
+      margin: 12px 0 18px;
+      font-weight: 600;
+      color: #5f2a43;
+      border: 2px solid white;
+    }
+    .animal-details span:first-child {
+      background: #ffe0f0;
+      padding: 2px 12px;
+      border-radius: 40px;
+    }
+    .buy-btn {
+      background: #ffadc9;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.3rem;
+      padding: 14px 0;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      border-bottom: 5px solid #b35f86;
+      transition: 0.07s;
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+      box-shadow: 0 5px 10px #feb0cb;
+    }
+    .buy-btn:active:not(:disabled) {
+      transform: translateY(4px);
+      border-bottom-width: 2px;
+    }
+    .buy-btn:disabled {
+      background: #e7c4d5;
+      border-bottom-color: #aa7f98;
+      color: #f3e3ec;
+      cursor: not-allowed;
+      opacity: 0.7;
+      box-shadow: none;
+    }
+
+    .reset-area {
+      display: flex;
+      justify-content: center;
+      margin-top: 35px;
+    }
+    #reset {
+      background: #f7d6e6;
+      border: 3px solid white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #943e66;
+      padding: 14px 40px;
+      border-radius: 50px;
+      box-shadow: 0 5px 0 #c78bae;
+      cursor: pointer;
+      transition: 0.08s;
+      font-family: 'Quicksand', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    #reset:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #c78bae;
+    }
+    footer {
+      text-align: center;
+      margin-top: 18px;
+      color: #ce80a8;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <h1>
+    <span>🐣</span> Cuddle & Click <span>🍼</span>
+  </h1>
+
+  <!-- stats -->
+  <div class="stats-panel">
+    <div class="treats-box">
+      <span>🍬</span>
+      <span id="treats">0</span>
+    </div>
+    <div class="production-box">
+      <span>⏲️</span>
+      <span id="production">0</span> /s
+    </div>
+  </div>
+
+  <!-- clicker animal -->
+  <div class="clicker-zone">
+    <div class="clicker-btn" id="clicker">🐱</div>
+    <div class="clicker-hint">✨ tap the furry face! ✨</div>
+  </div>
+
+  <!-- animal shop -->
+  <div class="shop-title">
+    <span>🛒</span> adopt a friend <span>🛒</span>
+  </div>
+  <div class="shop-grid" id="shopContainer"></div>
+
+  <!-- reset -->
+  <div class="reset-area">
+    <button id="reset">🔄 new game</button>
+  </div>
+  <footer>🐾 every second brings more treats 🐾</footer>
+</div>
+
+<script>
+  (function() {
+    // --- game state ---
+    let treats = 10;                // start with a few treats (welcome gift)
+
+    // animal data: name, emoji, baseCost, production (per second), owned
+    const animals = [
+      { name: "Kitten", emoji: "🐱", baseCost: 10, production: 1, owned: 0 },
+      { name: "Puppy", emoji: "🐶", baseCost: 50, production: 5, owned: 0 },
+      { name: "Bunny", emoji: "🐰", baseCost: 200, production: 20, owned: 0 },
+      { name: "Hamster", emoji: "🐹", baseCost: 1000, production: 100, owned: 0 },
+      { name: "Fox", emoji: "🦊", baseCost: 5000, production: 500, owned: 0 },
+      { name: "Panda", emoji: "🐼", baseCost: 25000, production: 2500, owned: 0 }  // bonus cutie!
+    ];
+
+    // helper: calculate current cost for an animal (exponential scaling)
+    function getCost(index) {
+      const animal = animals[index];
+      return Math.floor(animal.baseCost * Math.pow(1.15, animal.owned));
+    }
+
+    // total treats per second
+    function getTotalProduction() {
+      return animals.reduce((sum, a) => sum + a.owned * a.production, 0);
+    }
+
+    // --- UI update (treats, production, owned, costs, button states) ---
+    function refreshUI() {
+      // update treats display
+      document.getElementById('treats').textContent = Math.floor(treats).toLocaleString();
+
+      // total production
+      const prod = getTotalProduction();
+      document.getElementById('production').textContent = prod;
+
+      // update each animal row
+      animals.forEach((animal, idx) => {
+        const ownedSpan = document.getElementById(`owned-${idx}`);
+        const costSpan = document.getElementById(`cost-${idx}`);
+        const buyBtn = document.getElementById(`buy-${idx}`);
+
+        if (ownedSpan) ownedSpan.textContent = animal.owned;
+        if (costSpan) {
+          const nextCost = getCost(idx);
+          costSpan.textContent = nextCost;
+        }
+        if (buyBtn) {
+          // disable button if not enough treats
+          buyBtn.disabled = treats < getCost(idx);
+        }
+      });
+    }
+
+    // --- buy an animal ---
+    function buyAnimal(index) {
+      const animal = animals[index];
+      const cost = getCost(index);
+      if (treats >= cost) {
+        treats -= cost;
+        animal.owned++;
+        refreshUI();
+      }
+    }
+
+    // --- reset game ---
+    function resetGame() {
+      treats = 10;                     // fresh start treats
+      animals.forEach(a => a.owned = 0);
+      refreshUI();
+    }
+
+    // --- generate shop items dynamically (so we can easily extend) ---
+    function buildShop() {
+      const container = document.getElementById('shopContainer');
+      container.innerHTML = ''; // clear in case of rebuild
+
+      animals.forEach((animal, index) => {
+        const card = document.createElement('div');
+        card.className = 'animal-card';
+
+        // info line
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'animal-info';
+        infoDiv.innerHTML = `
+          <span class="animal-emoji">${animal.emoji}</span>
+          <span class="animal-name">${animal.name}</span>
+          <span class="animal-owned">✨ <span id="owned-${index}">0</span></span>
+        `;
+
+        // details (production + cost)
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'animal-details';
+        detailsDiv.innerHTML = `
+          <span>🍬 ${animal.production}/s</span>
+          <span>📦 <span id="cost-${index}">${animal.baseCost}</span></span>
+        `;
+
+        // buy button
+        const buyButton = document.createElement('button');
+        buyButton.className = 'buy-btn';
+        buyButton.id = `buy-${index}`;
+        buyButton.textContent = 'adopt ⋆｡°✩';
+
+        card.appendChild(infoDiv);
+        card.appendChild(detailsDiv);
+        card.appendChild(buyButton);
+        container.appendChild(card);
+      });
+    }
+
+    // --- event listeners ---
+    // click on big animal
+    document.getElementById('clicker').addEventListener('click', function(e) {
+      treats += 1;
+      refreshUI();
+
+      // tiny bounce effect
+      this.style.transform = 'translateY(12px)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 100);
+    });
+
+    // shop buying (event delegation)
+    document.getElementById('shopContainer').addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.tagName === 'BUTTON' && target.id.startsWith('buy-')) {
+        const index = parseInt(target.id.split('-')[1], 10);
+        if (!isNaN(index) && index >= 0 && index < animals.length) {
+          buyAnimal(index);
+        }
+      }
+    });
+
+    // reset button
+    document.getElementById('reset').addEventListener('click', resetGame);
+
+    // --- game loop: produce treats every second ---
+    setInterval(() => {
+      const prod = getTotalProduction();
+      if (prod > 0) {                // only add if there's production (saves useless updates)
+        treats += prod;
+      }
+      refreshUI();                   // also updates if prod = 0 (treats unchanged)
+    }, 1000);
+
+    // --- initialise shop and UI ---
+    buildShop();
+    refreshUI();
+
+    // optional: prevent accidental context menu on clicker
+    document.getElementById('clicker').addEventListener('contextmenu', (e) => e.preventDefault());
+  })();
+</script>
+</body>
+</html>
